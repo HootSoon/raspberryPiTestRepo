@@ -1,0 +1,23 @@
+# filepath: /home/pi/Programs/PythonFiles/raspberryPiTestRepo/Pi4_1/Bluetooth/hc-02_Connect
+import serial
+import time
+
+try:
+    bluetooth = serial.Serial("/dev/rfcomm0", 9600)
+    print("Connected to HC-02!")
+except serial.SerialException as e:
+    print(f"Failed to connect to HC-02: {e}")
+    exit(1)
+
+while True:
+    try:
+        msg = input("Enter command: ")  # Type commands (e.g., F, B, L, R, S)
+        bluetooth.write(msg.encode())   # Send data to Arduino
+        response = bluetooth.readline().decode()
+        print("Arduino:", response)
+    except serial.SerialException as e:
+        print(f"Serial communication error: {e}")
+        time.sleep(1)  # Wait for a second before retrying
+    except KeyboardInterrupt:
+        print("Exiting...")
+        break
